@@ -1,0 +1,122 @@
+version: '3'
+services:
+    postgres:
+      build:
+        context: ./containers/postgres
+        dockerfile: Dockerfile
+      environment:
+        - POSTGRES_USER=postgres
+        - POSTGRES_PASSWORD=secret
+      command: postgres -c log_destination='csvlog' -c logging_collector='on' -c log_filename='postgresql.log' -c log_statement='all'
+      ports:
+        - "5432:5432"
+      volumes:
+        - data-volume:/var/lib/postgresql/data
+    postgres-exporter:  # https://github.com/wrouesnel/postgres_exporter
+      image: wrouesnel/postgres_exporter
+      ports:
+        - "9187:9187"
+      environment:
+        - "DATA_SOURCE_NAME=postgresql://${DB_USER}:${DB_PASSWORD}@postgres:5432/test_baskerville"
+      depends_on:
+        - postgres
+    prometheus-postgresql-adapter: # https://github.com/timescale/prometheus-postgresql-adapter/
+      build:
+        context: ./containers/prometheus-postgresql-adapter
+        dockerfile: Dockerfile
+      ports:
+        - '9201:9201'
+      command: "-pg-host=postgres -pg-port=5432 -pg-user='postgres' -pg-password=secret -pg-use-timescaledb=true -pg-prometheus-log-samples"
+      environment:
+        POSTGRES_USER: "postgres"
+        POSTGRES_PASSWORD: "secret"
+      #network_mode: "host"
+      depends_on:
+        - postgres
+    prometheus:
+        build:
+          context: ./containers/prometheus
+          dockerfile: Dockerfile
+        ports:
+            - '9090:9090'
+        depends_on:
+          -  prometheus-postgresql-adapter
+    prometheus_push_gw: # https://github.com/prometheus/pushgateway#about-the-job-and-instance-labels
+        image: prom/pushgateway
+        ports:
+            - '9091:9091'
+        depends_on:
+          - prometheus
+    grafana:
+        build:
+            context: ./containers/grafana
+            dockerfile: Dockerfile
+            args:
+              - BASKERVILLE_DB=baskerville
+        ports:
+            - "3000:3000"
+        volumes:
+          - data-volume:/var/lib/grafana grafana/grafana
+    zookeeper:
+      image: hellgate75/zookeeper
+      ports:
+        - "2181:2181"
+        - "2182:2182"
+        - "8080:8080"
+    kafka:
+      build:
+        context: ./containers/kafka
+        dockerfile: Dockerfile
+#      image: wurstmeister/kafka:0.10.2.0-1
+      ports:
+        - "9092:9092"
+        - "9093:9093"
+      environment:
+        KAFKA_ADVERTISED_HOST_NAME: ${DOCKER_KAFKA_HOST}  # before run: export DOCKER_KAFKA_HOST=$(ipconfig getifaddr en0)
+        KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://${DOCKER_KAFKA_HOST}:9092
+        KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+        KAFKA_BROKER_ID: 1
+      volumes:
+        - /var/run/docker.sock:/var/run/docker.sock
+      depends_on:
+        - zookeeper
+    kafka_exporter:
+      image: danielqsj/kafka-exporter:latest
+      ports:
+        - "9308:9308"
+      command: "--kafka.server=kafka:9092 --kafka.labels='test=1'" # until this is merged: https://github.com/danielqsj/kafka_exporter/pull/69/files
+      depends_on:
+        - kafka
+      restart: unless-stopped
+    baskerville:
+      build:
+        context: ./containers/baskerville
+        dockerfile: Dockerfile
+        args:
+          - GITLAB_USER=${GITLAB_USER}
+          - GITLAB_KEY=${GITLAB_KEY}
+          - BASKERVILLE_BRANCH=${BASKERVILLE_BRANCH}
+          - DB_USER=${DB_USER}
+          - DB_PASSWORD=${DB_PASSWORD}
+          - DB_HOST=postgres
+          - DB_PORT=${DB_PORT}
+          - ELK_USER=${ELK_USER}
+          - ELK_PASSWORD=${ELK_PASSWORD}
+          - ELK_HOST=${ELK_HOST}
+          - KAFKA_HOST=kafka:9092
+      env_file:
+        - .env
+      command: python ./main.py -c /app/baskerville/conf/baskerville.yaml rawlog -e -t
+      ports:
+        - "8998:8998"
+        - "4040:4040"
+        - "4041:4041"
+      depends_on:
+        - postgres
+        - kafka
+        - zookeeper
+      volumes:
+        - data-volume:/app/baskerville/data
+
+volumes:
+  data-volume:

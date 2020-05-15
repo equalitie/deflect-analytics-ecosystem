@@ -1,0 +1,12 @@
+# must be set:
+BASKERVILLE_BRANCH=e.g. master, develop etc, the branch to pull from
+DB_HOST=the db host (docker ip if local)
+DB_PORT=5432
+DB_USER=postgres
+DB_PASSWORD=secret
+
+# optional - pipeline dependent
+ELK_USER=elasticsearch
+ELK_PASSWORD=changeme
+ELK_HOST=the elasticsearch host (docker ip if local):port (default:9200)
+KAFKA_HOST=kafka ip (docker ip if local):port (default:9092)

@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Test index</title>
+</head>
+<body>
+<h1>Some test content</h1>
+<h2></h2>
+<button onclick="resetCounter()">Reset</button>
+<script>
+    let resetCounter = function () {
+        localStorage.setItem('counter', 0);
+        let h2 = document.querySelectorAll('h2')[0];
+        h2.textContent = 'Seen 0 times';
+    };
+    (function () {
+        let counter = +localStorage.getItem('counter');
+        counter = counter !== null? counter : 0;
+        counter += 1;
+        let h2 = document.querySelectorAll('h2')[0];
+        h2.textContent = 'Seen ' + counter + ' times';
+        console.log('Seen ', counter, ' times');
+        localStorage.setItem('counter', counter);
+    })();
+</script>
+</body>
+</html>

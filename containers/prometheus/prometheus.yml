@@ -1,0 +1,72 @@
+global:
+    scrape_interval: 15s
+    external_labels:
+      monitor: 'my-monitor'
+# Remote write configuration.
+remote_write:
+    - url: "http://prometheus-postgresql-adapter:9201/write"  # ?graphite.default-prefix=customprefix.
+
+# Remote read configuration.
+remote_read:
+    - url: "http://prometheus-postgresql-adapter:9201/read"   # ?graphite.default-prefix=customprefix."
+scrape_configs:
+    - job_name: 'prometheus'
+      static_configs:
+        - targets:
+          - 'localhost:9090'
+    - job_name: 'grafana'
+      static_configs:
+          - targets:
+              - 'grafana:3000'
+    - job_name: 'baskerville_exporter'
+      static_configs:
+        - targets:
+            - 'baskerville:8998'
+    - job_name: 'push_gw'
+      static_configs:
+        - targets:
+            - 'prometheus_push_gw:9091'
+    - job_name: 'kafka_exporter'
+      static_configs:
+        - targets:
+            - 'kafka_exporter:9038'
+      honor_labels: true
+    - job_name: 'postgres-exporter'
+      static_configs:
+        - targets:
+            - 'postgres-exporter:9038'
+      honor_labels: true
+#    - job_name: 'node-exporter'
+#      static_configs:
+#        - targets:
+#          - 'node-exporter:9100'
+#    - job_name: 'kafka-exporter'
+#      static_configs:
+#        - targets: ['kafka-exporter:9308']
+#    - job_name: 'blackbox_exporter'
+#      metrics_path: /probe
+#      params:
+#        module: [http_2xx]
+#      static_configs:
+#        - targets:
+#          - prometheus.io  # todo: add client targets here instead
+#      relabel_configs:
+#        - source_labels: [__address__]
+#          target_label: __param_target
+#        - source_labels: [__param_target]
+#          target_label: instance
+#        - target_label: __address__
+#          replacement: 'blackbox_exporter:9115'
+#    - job_name: 'nginx-exporter'
+#      static_configs:
+#        - targets: ['nginx-exporter:9913']
+#    - job_name: 'elasticsearch_exporter'
+#      static_configs:
+#        - targets: ['elasticsearch_exporter:9108']
+#    - job_name: 'kafka-exporter'
+#      static_configs:
+#        - targets: ['kafka-exporter:9308']
+#    - job_name: 'ats_exporter'
+#      static_configs:
+#        - targets:
+#            - 'ats-exporter:8000'

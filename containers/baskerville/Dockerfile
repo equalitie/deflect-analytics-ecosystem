@@ -1,8 +1,13 @@
+# Copyright (c) 2020, eQualit.ie inc.
+# All rights reserved.
+#
+# This source code is licensed under the BSD-style license found in the
+# LICENSE file in the root directory of this source tree.
+
+
 FROM openjdk:8
 FROM python:3.6
 
-ARG GITLAB_USER
-ARG GITLAB_KEY
 # necessary:
 ARG DB_USER
 ARG DB_PASSWORD
@@ -35,11 +40,11 @@ RUN mkdir app \
     && cd spark-iforest/python \
     && pip install . \
     && cd ../../ \
-    && git clone https://$GITLAB_USER:$GITLAB_KEY@gitlab.internal.equalit.ie/mkaranasou/esretriever.git \
+    && git clone https://github.com/equalitie/esretriever.git \
     && cd esretriever \
     && pip install . \
     && cd ../ \
-    && git clone --branch $BASKERVILLE_BRANCH https://$GITLAB_USER:$GITLAB_KEY@gitlab.internal.equalit.ie/deflect/baskerville.git \
+    && git clone --branch $BASKERVILLE_BRANCH https://github.com/equalitie/baskerville.git \
     && cd baskerville \
     && pip install .[test] \
     && mkdir src/baskerville/logs \

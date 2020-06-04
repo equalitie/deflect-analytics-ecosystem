@@ -120,3 +120,9 @@ For Baskerville `training` you'll need:
           
           More on this [here](https://github.com/grafana/grafana/blob/master/docs/sources/features/datasources/postgres.md)
         - Set up a postgres exporter to monitor requests, ram etc
+
+
+
+<a rel="license" href="http://creativecommons.org/licenses/by/4.0/">
+<img alt="Creative Commons Licence" style="border-width:0" src="https://i.creativecommons.org/l/by/4.0/80x15.png" /></a><br />
+This work is copyright (c) 2020, eQualit.ie inc., and is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by/4.0/">Creative Commons Attribution 4.0 International License</a>.

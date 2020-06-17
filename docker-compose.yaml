@@ -95,6 +95,10 @@ services:
       depends_on:
         - kafka
       restart: unless-stopped
+    redis:
+      image: redis
+      ports:
+        - "6379:6379"
     baskerville:
       build:
         context: ./containers/baskerville

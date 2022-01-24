@@ -77,6 +77,7 @@ services:
       - postgres
     volumes:
       - grafana3:/var/lib/grafana:Z
+      - ./containers/grafana/dashboards:/etc/grafana/provisioning/dashboards/baskerville
 
   baskerville:
     image: "${BASKERVILLE_IMAGE}"

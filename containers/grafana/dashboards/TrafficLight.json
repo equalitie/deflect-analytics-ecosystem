@@ -1,7 +1,7 @@
 {
   "__inputs": [
     {
-      "name": "DS_POSTGRESQL",
+      "name": "PostgreSQL",
       "label": "PostgreSQL",
       "description": "",
       "type": "datasource",
@@ -68,7 +68,7 @@
       "bars": true,
       "dashLength": 10,
       "dashes": false,
-      "datasource": "${DS_POSTGRESQL}",
+      "datasource": "PostgreSQL",
       "description": "",
       "fieldConfig": {
         "defaults": {
@@ -292,7 +292,7 @@
     },
     {
       "cacheTimeout": null,
-      "datasource": "${DS_POSTGRESQL}",
+      "datasource": "PostgreSQL",
       "fieldConfig": {
         "defaults": {
           "custom": {},
@@ -414,7 +414,7 @@
       "type": "stat"
     },
     {
-      "datasource": "${DS_POSTGRESQL}",
+      "datasource": "PostgreSQL",
       "fieldConfig": {
         "defaults": {
           "custom": {},
@@ -524,7 +524,7 @@
       "type": "stat"
     },
     {
-      "datasource": "${DS_POSTGRESQL}",
+      "datasource": "PostgreSQL",
       "fieldConfig": {
         "defaults": {
           "custom": {},
@@ -634,7 +634,7 @@
       "type": "stat"
     },
     {
-      "datasource": "${DS_POSTGRESQL}",
+      "datasource": "PostgreSQL",
       "fieldConfig": {
         "defaults": {
           "custom": {},
@@ -744,7 +744,7 @@
       "type": "stat"
     },
     {
-      "datasource": "${DS_POSTGRESQL}",
+      "datasource": "PostgreSQL",
       "description": "The total number of passed challenge IPs",
       "fieldConfig": {
         "defaults": {
@@ -830,7 +830,7 @@
       {
         "allValue": null,
         "current": {},
-        "datasource": "${DS_POSTGRESQL}",
+        "datasource": "PostgreSQL",
         "definition": "select distinct target from request_sets rs where stop > (NOW() - INTERVAL '20 minute');",
         "error": null,
         "hide": 0,

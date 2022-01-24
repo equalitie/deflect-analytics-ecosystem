@@ -19,4 +19,4 @@ VOLUME /var/lib/grafana
 
 COPY ./dashboards_config /etc/grafana/provisioning/dashboards
 COPY ./datasources /etc/grafana/provisioning/datasources
-COPY ./dashboards /etc/grafana/provisioning/dashboards/baskerville
+# COPY ./dashboards /etc/grafana/provisioning/dashboards/baskerville
